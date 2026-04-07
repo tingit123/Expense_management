@@ -23,7 +23,8 @@
                     colors: {
                         vip: {
                             black: '#0A0A0A', dark: '#171717', gray: '#F4F5F7',
-                            gold: '#D4AF37', accent: '#6366F1', red: '#F43F5E'
+                            gold: '#D4AF37', accent: '#6366F1', red: '#F43F5E',
+                            warning: '#F59E0B'
                         }
                     },
                     boxShadow: {
@@ -34,6 +35,7 @@
                     animation: {
                         'fade-in': 'fadeIn 0.4s ease-out forwards',
                         'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
@@ -44,7 +46,6 @@
         }
     </script>
     <style>
-        /* Bỏ khóa cuộn, trả lại cuộn tự nhiên cho trang web */
         body {
             background-color: #FAFAFC;
             -webkit-tap-highlight-color: transparent;
@@ -94,7 +95,6 @@
             background-color: #10B981;
         }
 
-        /* Ẩn scrollbar nhưng vẫn cho cuộn nội dung Modal */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -103,21 +103,74 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        .progress-striped {
+            background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+            background-size: 1rem 1rem;
+        }
     </style>
 </head>
 
-<body class="text-slate-800 antialiased">
+<body class="text-slate-800 antialiased relative">
 
-    <!-- Background Blurs -->
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[-1]">
         <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-indigo-100/50 blur-3xl"></div>
         <div class="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-rose-50/50 blur-3xl"></div>
     </div>
 
-    <!-- Main Wrapper: Flex container -->
+    <!-- HƯỚNG DẪN SỬ DỤNG LẦN ĐẦU (ONBOARDING) -->
+    <div id="onboardingModal"
+        class="fixed inset-0 z-[150] hidden flex items-center justify-center p-4 bg-vip-black/80 backdrop-blur-md">
+        <div
+            class="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl animate-slide-up overflow-hidden flex flex-col">
+            <div class="p-8 md:p-12 text-center">
+                <div
+                    class="w-20 h-20 bg-indigo-50 text-vip-accent rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-sm">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-vip-black mb-4">Chào mừng đến với Sofi<span
+                        class="gold-text-gradient ml-1">PRO</span></h2>
+                <p class="text-slate-500 mb-8 max-w-lg mx-auto">Bạn không biết phải bắt đầu quản lý chi tiêu từ đâu?
+                    Đừng lo, Sofi được thiết kế để giải quyết vấn đề đó.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-8">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-vip-black font-bold mb-3 shadow-sm">
+                            1</div>
+                        <h4 class="font-bold text-vip-black mb-1">Đặt ngân sách</h4>
+                        <p class="text-xs text-slate-500">Giới hạn số tiền tối đa bạn được phép chi tiêu trong tháng
+                            này.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-vip-black font-bold mb-3 shadow-sm">
+                            2</div>
+                        <h4 class="font-bold text-vip-black mb-1">Ghi chép nhanh</h4>
+                        <p class="text-xs text-slate-500">Dành ra 30s mỗi ngày để ghi lại các khoản thu/chi của bạn.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-vip-black font-bold mb-3 shadow-sm">
+                            3</div>
+                        <h4 class="font-bold text-vip-black mb-1">Theo dõi báo cáo</h4>
+                        <p class="text-xs text-slate-500">Nhìn vào biểu đồ để thấy "sự thật" thói quen tiêu tiền của
+                            mình.</p>
+                    </div>
+                </div>
+
+                <button onclick="finishOnboarding()"
+                    class="w-full md:w-auto px-10 py-4 bg-vip-black text-white font-bold rounded-2xl shadow-floating hover:bg-gray-800 transition transform hover:-translate-y-1">
+                    Tôi đã hiểu, Bắt đầu ngay!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
     <div class="flex min-h-screen">
 
-        <!-- Sidebar (Desktop) - FIXED TẠI CHỖ -->
+        <!-- Sidebar (Desktop) -->
         <aside
             class="hidden lg:flex fixed top-0 left-0 h-screen w-72 flex-col bg-white/60 backdrop-blur-xl border-r border-slate-100 px-6 py-8 z-20">
             <div class="flex items-center gap-3 mb-10">
@@ -136,6 +189,10 @@
                     class="nav-link w-full flex items-center gap-4 px-5 py-4 bg-vip-black text-white rounded-2xl font-semibold shadow-premium transition">
                     <i class="fa-solid fa-house w-5 text-vip-gold"></i> Tổng quan
                 </button>
+                <button onclick="switchTab('savings')" data-tab="savings"
+                    class="nav-link w-full flex items-center gap-4 px-5 py-4 text-slate-500 hover:text-vip-black hover:bg-white rounded-2xl font-semibold transition">
+                    <i class="fa-solid fa-piggy-bank w-5"></i> Tiết kiệm
+                </button>
                 <button onclick="switchTab('reports')" data-tab="reports"
                     class="nav-link w-full flex items-center gap-4 px-5 py-4 text-slate-500 hover:text-vip-black hover:bg-white rounded-2xl font-semibold transition">
                     <i class="fa-solid fa-chart-pie w-5"></i> Báo cáo
@@ -151,16 +208,10 @@
             </nav>
 
             <div class="mt-6 space-y-3">
-                <!-- Nút đăng nhập/đăng xuất -->
                 <button id="sidebarLoginBtn" onclick="toggleAuthModal()"
                     class="w-full bg-indigo-50 text-vip-accent hover:bg-indigo-100 py-3 rounded-xl font-bold transition flex justify-center items-center gap-2">
                     <i class="fa-solid fa-user"></i> Đăng nhập / Đăng ký
                 </button>
-                <button id="sidebarLogoutBtn" onclick="handleLogout()"
-                    class="hidden w-full bg-red-50 text-red-500 hover:bg-red-100 py-3 rounded-xl font-bold transition flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
-                </button>
-
                 <button onclick="toggleModal('addTransactionModal')"
                     class="w-full bg-vip-black hover:bg-gray-800 text-white py-4 rounded-2xl font-bold shadow-premium transform hover:-translate-y-1 transition duration-300 flex justify-center items-center gap-2">
                     <i class="fa-solid fa-plus text-vip-gold"></i> Giao dịch mới
@@ -168,53 +219,150 @@
             </div>
         </aside>
 
-        <!-- Main Content Area - CÓ THỂ CUỘN TỰ DO -->
+        <!-- Main Content -->
         <main class="flex-1 w-full lg:ml-72 pb-24 lg:pb-10 min-h-screen">
 
-            <!-- Header (Mobile) -->
-            <header class="lg:hidden glass-nav sticky top-0 z-20 px-6 py-4 flex justify-between items-center shadow-sm">
-                <div class="flex items-center gap-3">
-                    <img id="userAvatarMobile"
-                        src="https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B" alt="Avatar"
-                        class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
-                    <div>
-                        <p class="text-xs text-slate-500 font-medium">Xin chào,</p>
-                        <p class="text-sm font-bold text-vip-black flex items-center gap-1">
-                            <span id="userNameMobile">Khách (Dùng thử)</span>
-                            <i id="verifiedBadgeMobile" class="fa-solid fa-circle-check text-slate-300 text-[10px]"></i>
-                        </p>
+            <!-- HEADER MOBILE: Tích hợp Profile Dropdown -->
+            <header class="lg:hidden glass-nav sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-sm">
+                <div class="relative">
+                    <!-- Profile Button -->
+                    <button id="profileBtnMobile" onclick="toggleProfileMenu('mobile')"
+                        class="flex items-center gap-2 bg-white pl-1.5 pr-3 py-1.5 rounded-full shadow-sm border border-slate-100 hover:shadow-md transition">
+                        <img id="userAvatarMobile"
+                            src="https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B" alt="Avatar"
+                            class="w-8 h-8 rounded-full">
+                        <span class="font-bold text-sm text-slate-800 tracking-tight max-w-[100px] truncate"
+                            id="userNameMobile">Khách</span>
+                        <i id="verifiedBadgeMobile" class="fa-solid fa-circle-check text-slate-300 text-sm"></i>
+                    </button>
+
+                    <!-- Dropdown Menu Mobile -->
+                    <div id="profileDropdownMobile"
+                        class="absolute left-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden z-50 overflow-hidden origin-top-left transition-all">
+                        <div class="p-4 border-b border-slate-50 bg-slate-50/50">
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Tài khoản</p>
+                            <p class="text-sm font-bold text-vip-black truncate" id="dropdownUsernameMobile">@guest</p>
+                        </div>
+                        <div class="p-2">
+                            <button onclick="openChangeNameModal()"
+                                class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-vip-accent rounded-xl transition flex items-center gap-3">
+                                <i class="fa-solid fa-user-pen w-4 text-center"></i> Đổi tên hiển thị
+                            </button>
+                            <button onclick="openChangePasswordModal()"
+                                class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-vip-accent rounded-xl transition flex items-center gap-3">
+                                <i class="fa-solid fa-key w-4 text-center"></i> Đổi mật khẩu
+                            </button>
+                        </div>
+                        <div class="p-2 border-t border-slate-50">
+                            <button onclick="handleLogout()"
+                                class="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition flex items-center gap-3">
+                                <i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Đăng xuất
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <button onclick="switchTab('security')"
+                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-600 shadow-sm border border-slate-100">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
             </header>
 
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
 
-                <!-- Desktop Header Info -->
+                <!-- HEADER DESKTOP: Tích hợp Profile Dropdown chuẩn ảnh -->
                 <div class="hidden lg:flex justify-between items-end mb-10">
                     <div>
                         <h2 class="text-3xl font-extrabold text-vip-black mb-1" id="pageTitle">Bảng điều khiển</h2>
                         <p class="text-slate-500 font-medium" id="greetingDate">Hôm nay</p>
                     </div>
-                    <div
-                        class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-100">
-                        <img id="userAvatarDesktop"
-                            src="https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B" alt="Avatar"
-                            class="w-8 h-8 rounded-full">
-                        <span class="font-bold text-sm" id="userNameDesktop">Khách (Dùng thử)</span>
-                        <i id="verifiedBadgeDesktop" class="fa-solid fa-circle-check text-slate-300"></i>
+
+                    <div class="relative z-40">
+                        <!-- Nút Profile Pill (Được thiết kế y hệt ảnh) -->
+                        <button id="profileBtnDesktop" onclick="toggleProfileMenu('desktop')"
+                            class="flex items-center gap-2.5 bg-white pl-1.5 pr-4 py-1.5 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-md transition">
+                            <img id="userAvatarDesktop"
+                                src="https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B" alt="Avatar"
+                                class="w-9 h-9 rounded-full bg-vip-black">
+                            <span class="font-bold text-base text-slate-800 tracking-tight"
+                                id="userNameDesktop">Khách</span>
+                            <i id="verifiedBadgeDesktop"
+                                class="fa-solid fa-circle-check text-slate-300 text-[18px]"></i>
+                        </button>
+
+                        <!-- Dropdown Menu Desktop -->
+                        <div id="profileDropdownDesktop"
+                            class="absolute right-0 mt-3 w-60 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden overflow-hidden origin-top-right transition-all">
+                            <div class="p-4 border-b border-slate-50 bg-slate-50/50">
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Tài khoản</p>
+                                <p class="text-sm font-bold text-vip-black truncate" id="dropdownUsernameDesktop">@guest
+                                </p>
+                            </div>
+                            <div class="p-2">
+                                <button onclick="openChangeNameModal()"
+                                    class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-vip-accent rounded-xl transition flex items-center gap-3">
+                                    <i class="fa-solid fa-user-pen w-4 text-center"></i> Đổi tên hiển thị
+                                </button>
+                                <button onclick="openChangePasswordModal()"
+                                    class="w-full text-left px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-vip-accent rounded-xl transition flex items-center gap-3">
+                                    <i class="fa-solid fa-key w-4 text-center"></i> Đổi mật khẩu
+                                </button>
+                            </div>
+                            <div class="p-2 border-t border-slate-50">
+                                <button onclick="handleLogout()"
+                                    class="w-full text-left px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition flex items-center gap-3">
+                                    <i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Đăng xuất
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- ================= TAB: TỔNG QUAN ================= -->
                 <section id="view-dashboard" class="tab-content block animate-fade-in">
+
+                    <div
+                        class="bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50 mb-6 flex flex-col md:flex-row items-center gap-6 justify-between relative overflow-hidden group">
+                        <div class="flex items-center gap-5 w-full md:w-auto">
+                            <div
+                                class="w-16 h-16 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-bold text-vip-black">Ngân sách Tháng này</h3>
+                                <div class="flex items-baseline gap-2 mt-1">
+                                    <span class="text-2xl font-extrabold text-vip-black" id="budgetSpentDisplay">0
+                                        ₫</span>
+                                    <span class="text-sm font-medium text-slate-400" id="budgetTotalDisplay">/ 0
+                                        ₫</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:flex-1 max-w-xl">
+                            <div class="flex justify-between text-xs font-bold text-slate-500 mb-2">
+                                <span id="budgetStatusText">Chưa đặt ngân sách</span>
+                                <span id="budgetPercentDisplay">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden relative">
+                                <div id="budgetProgressBar"
+                                    class="h-4 rounded-full transition-all duration-700 bg-slate-300 w-0"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="toggleModal('setBudgetModal')"
+                            class="shrink-0 text-vip-accent bg-indigo-50 hover:bg-indigo-100 font-bold px-5 py-3 rounded-xl transition flex items-center gap-2 text-sm w-full md:w-auto justify-center">
+                            <i class="fa-solid fa-pen-to-square"></i> Sửa ngân sách
+                        </button>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-                        <!-- Black Card -->
                         <div
                             class="lg:col-span-7 black-card rounded-[2rem] p-8 shadow-xl text-white flex flex-col justify-between min-h-[220px]">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-gray-400 font-medium text-sm mb-1 uppercase tracking-wider">Tổng số
-                                        dư</p>
+                                    <p class="text-gray-400 font-medium text-sm mb-1 uppercase tracking-wider">Tổng tài
+                                        sản (Số dư)</p>
                                     <h3 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-1"
                                         id="totalBalance">0 ₫</h3>
                                 </div>
@@ -231,7 +379,6 @@
                             </div>
                         </div>
 
-                        <!-- Thu / Chi -->
                         <div class="lg:col-span-5 grid grid-cols-2 gap-4">
                             <div
                                 class="bg-white rounded-[2rem] p-6 shadow-premium border border-slate-50 flex flex-col justify-between">
@@ -260,7 +407,20 @@
                         </div>
                     </div>
 
-                    <!-- Biểu đồ & Lịch sử -->
+                    <div
+                        class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-[2rem] p-6 border border-indigo-100 mb-6 flex items-start gap-4">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-vip-accent shrink-0 shadow-sm">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-indigo-900 mb-1">Mẹo quản lý chi tiêu: Quy tắc 50/30/20</h4>
+                            <p class="text-sm text-indigo-700 leading-relaxed">Hãy thử chia thu nhập của bạn thành 3
+                                phần: <b>50%</b> cho nhu cầu thiết yếu (tiền nhà, ăn uống), <b>30%</b> cho mong muốn cá
+                                nhân (giải trí, mua sắm), và <b>20%</b> để tiết kiệm hoặc đầu tư nhé.</p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div
                             class="lg:col-span-5 bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50">
@@ -297,6 +457,176 @@
                     </div>
                 </section>
 
+                <!-- ================= TAB: TIẾT KIỆM ================= -->
+                <section id="view-savings" class="tab-content hidden animate-fade-in">
+
+                    <div class="bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50 mb-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div
+                                class="w-12 h-12 bg-indigo-50 text-vip-accent rounded-2xl flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-extrabold text-vip-black">Bảng tính Tiết kiệm nhanh</h3>
+                                <p class="text-sm text-slate-500">Mô phỏng lương và các khoản chi cố định để xem bạn dư
+                                    bao nhiêu.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                            <div class="md:col-span-7 space-y-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Thu nhập (Ví
+                                        dụ: Lương tháng)</label>
+                                    <div
+                                        class="flex items-center border-b-2 border-slate-200 focus-within:border-emerald-500 pb-2 transition-colors">
+                                        <span class="text-emerald-500 font-extrabold mr-3">+</span>
+                                        <input type="number" id="planIncome"
+                                            class="w-full text-xl font-bold outline-none text-vip-black bg-transparent"
+                                            placeholder="VD: 8000000" oninput="calculatePlan()">
+                                        <span class="text-slate-400 ml-2 font-bold">₫</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Tiền nhà /
+                                            Điện nước</label>
+                                        <div
+                                            class="flex items-center border-b-2 border-slate-200 focus-within:border-rose-500 pb-2 transition-colors">
+                                            <span class="text-rose-500 font-extrabold mr-3">-</span>
+                                            <input type="number" id="planRent"
+                                                class="w-full text-lg font-bold outline-none text-vip-black bg-transparent"
+                                                placeholder="VD: 2500000" oninput="calculatePlan()">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Tiền ăn
+                                            uống</label>
+                                        <div
+                                            class="flex items-center border-b-2 border-slate-200 focus-within:border-rose-500 pb-2 transition-colors">
+                                            <span class="text-rose-500 font-extrabold mr-3">-</span>
+                                            <input type="number" id="planFood"
+                                                class="w-full text-lg font-bold outline-none text-vip-black bg-transparent"
+                                                placeholder="VD: 2000000" oninput="calculatePlan()">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Xăng xe /
+                                            Đi lại</label>
+                                        <div
+                                            class="flex items-center border-b-2 border-slate-200 focus-within:border-rose-500 pb-2 transition-colors">
+                                            <span class="text-rose-500 font-extrabold mr-3">-</span>
+                                            <input type="number" id="planTransport"
+                                                class="w-full text-lg font-bold outline-none text-vip-black bg-transparent"
+                                                placeholder="VD: 500000" oninput="calculatePlan()">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Chi tiêu
+                                            khác</label>
+                                        <div
+                                            class="flex items-center border-b-2 border-slate-200 focus-within:border-rose-500 pb-2 transition-colors">
+                                            <span class="text-rose-500 font-extrabold mr-3">-</span>
+                                            <input type="number" id="planOther"
+                                                class="w-full text-lg font-bold outline-none text-vip-black bg-transparent"
+                                                placeholder="VD: 1000000" oninput="calculatePlan()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="md:col-span-5 bg-slate-50 rounded-[1.5rem] p-6 flex flex-col justify-center border border-slate-100">
+                                <p class="text-slate-500 font-bold mb-2 text-center uppercase tracking-widest text-xs">
+                                    Sẽ tiết kiệm được</p>
+                                <h2 class="text-4xl font-extrabold text-slate-300 text-center mb-4 transition-colors duration-300"
+                                    id="planResult">0 ₫</h2>
+
+                                <div class="w-full bg-slate-200 rounded-full h-2 mb-3">
+                                    <div id="planProgressBar"
+                                        class="bg-emerald-500 h-2 rounded-full transition-all duration-500 w-0"></div>
+                                </div>
+                                <p class="text-xs text-center text-slate-400 font-medium h-4" id="planMessage">Điền số
+                                    tiền để bắt đầu mô phỏng</p>
+
+                                <button onclick="savePlanToTransactions()"
+                                    class="mt-6 w-full bg-vip-black text-white font-bold py-3.5 rounded-xl shadow-floating hover:bg-gray-800 transition active:scale-95">
+                                    <i class="fa-solid fa-check mr-2"></i> Áp dụng vào sổ thu chi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-vip-black rounded-[2rem] p-8 lg:p-10 shadow-xl text-white mb-6 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow">
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-xl font-bold mb-6">Thực tế tháng <span id="savingsMonthStr"></span></h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div>
+                                    <p class="text-gray-400 font-medium text-sm mb-1 uppercase tracking-wider">Tổng thu
+                                        nhập</p>
+                                    <h3 class="text-3xl font-bold text-emerald-400" id="savIncome">0 ₫</h3>
+                                </div>
+                                <div class="hidden md:flex items-center justify-center text-gray-600 text-3xl">
+                                    <i class="fa-solid fa-minus"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 font-medium text-sm mb-1 uppercase tracking-wider">Đã chi
+                                        tiêu</p>
+                                    <h3 class="text-3xl font-bold text-rose-400" id="savExpense">0 ₫</h3>
+                                </div>
+                            </div>
+                            <div class="pt-8 border-t border-gray-800">
+                                <p class="text-gray-400 font-medium text-sm mb-2 uppercase tracking-wider">Thực tế bạn
+                                    tiết kiệm được</p>
+                                <div class="flex items-end gap-4">
+                                    <h2 class="text-4xl md:text-5xl font-extrabold text-white" id="savTotal">0 ₫</h2>
+                                    <span
+                                        class="text-sm font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 mb-2"
+                                        id="savPercent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50 mb-6">
+                        <h3 class="text-xl font-bold text-vip-black mb-6">Mô phỏng dòng tiền</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm font-bold text-slate-600 mb-1">
+                                <span>Nguồn tiền (100%)</span>
+                                <span id="savBarIncomeText">0 ₫</span>
+                            </div>
+                            <div class="w-full h-8 bg-emerald-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-500 w-full"></div>
+                            </div>
+                        </div>
+                        <div class="relative mt-6">
+                            <div class="flex justify-between text-sm font-bold text-slate-600 mb-1">
+                                <span>Đã chi tiêu (<span id="savBarExpPercent">0%</span>)</span>
+                                <span>Giữ lại tiết kiệm (<span id="savBarSavPercent">0%</span>)</span>
+                            </div>
+                            <div class="w-full h-8 bg-slate-100 rounded-full overflow-hidden flex">
+                                <div id="savBarExpFill" class="h-full bg-rose-500 transition-all duration-700"
+                                    style="width: 0%"></div>
+                                <div id="savBarSavFill" class="h-full bg-emerald-400 transition-all duration-700"
+                                    style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50">
+                        <h3 class="text-xl font-bold text-vip-black mb-6">Chi tiết các khoản làm giảm tiền tiết kiệm
+                        </h3>
+                        <div id="savExpenseList" class="space-y-4"></div>
+                        <div id="noSavData" class="py-6 text-center text-slate-400 hidden">
+                            Chưa có khoản chi tiêu nào trong tháng này.
+                        </div>
+                    </div>
+                </section>
+
                 <!-- ================= TAB: BÁO CÁO ================= -->
                 <section id="view-reports" class="tab-content hidden animate-fade-in">
                     <div class="bg-white rounded-[2rem] p-6 lg:p-8 shadow-premium border border-slate-50 mb-6">
@@ -317,7 +647,10 @@
                 <!-- ================= TAB: MỤC TIÊU ================= -->
                 <section id="view-goals" class="tab-content hidden animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-extrabold text-vip-black">Mục tiêu tài chính</h3>
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-vip-black">Mục tiêu tài chính</h3>
+                            <p class="text-sm text-slate-500">Giúp người dùng số 6 đạt mục tiêu nhanh hơn.</p>
+                        </div>
                         <button onclick="toggleGoalModal()"
                             class="w-12 h-12 rounded-full bg-vip-black text-white flex items-center justify-center hover:bg-gray-800 transition shadow-floating">
                             <i class="fa-solid fa-plus text-vip-gold"></i>
@@ -332,14 +665,13 @@
                             <i class="fa-solid fa-bullseye text-3xl text-slate-300"></i>
                         </div>
                         <h4 class="text-base font-bold text-slate-600 mb-1">Chưa có mục tiêu</h4>
-                        <p class="text-sm">Hãy tạo mục tiêu đầu tiên của bạn.</p>
+                        <p class="text-sm">Hãy tạo mục tiêu đầu tiên của bạn (Mua nhà, Mua xe...).</p>
                     </div>
                 </section>
 
                 <!-- ================= TAB: CÀI ĐẶT ================= -->
                 <section id="view-security" class="tab-content hidden animate-fade-in">
 
-                    <!-- Khung Đăng nhập (Chỉ hiện khi là Guest) -->
                     <div id="guestPromoBox"
                         class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-[2rem] p-8 shadow-floating mb-6 text-white text-center">
                         <div
@@ -355,57 +687,39 @@
                         </button>
                     </div>
 
-                    <!-- Thông tin user (Chỉ hiện khi đã đăng nhập) -->
                     <div id="userProfileBox"
                         class="hidden bg-white rounded-[2.5rem] overflow-hidden shadow-premium border border-slate-50 mb-6 p-6 lg:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
                         <div class="flex flex-col sm:flex-row items-center gap-5">
                             <img id="settingAvatar" src="" alt="Avatar"
-                                class="w-20 h-20 rounded-full shadow-md border-4 border-slate-50">
+                                class="w-20 h-20 rounded-full shadow-md border-4 border-slate-50 bg-vip-black">
                             <div>
                                 <h3
                                     class="text-2xl font-extrabold text-vip-black flex items-center justify-center sm:justify-start gap-2">
                                     <span id="settingName">Name</span>
-                                    <i class="fa-solid fa-circle-check text-vip-accent text-sm"></i>
+                                    <i class="fa-solid fa-circle-check text-indigo-500 text-sm"></i>
                                 </h3>
                                 <p class="text-slate-500 font-medium">@<span id="settingUsername">username</span></p>
                             </div>
                         </div>
-                        <button onclick="handleLogout()"
-                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-6 rounded-xl transition flex items-center gap-2 w-full sm:w-auto justify-center">
-                            <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
-                        </button>
-                    </div>
-
-                    <div class="bg-white rounded-[2rem] shadow-premium border border-slate-50 mb-6 p-6 lg:p-8">
-                        <h3 class="text-xl font-extrabold text-vip-black mb-6">Tùy chọn hiển thị</h3>
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div
-                                        class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-600">
-                                        <i class="fa-solid fa-moon"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-vip-black text-sm">Chế độ tối (Dark Mode)</h4>
-                                        <p class="text-xs text-slate-400">Sắp ra mắt</p>
-                                    </div>
-                                </div>
-                                <div class="relative inline-block w-12 mr-2 select-none">
-                                    <input type="checkbox" disabled
-                                        class="absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none z-10" />
-                                    <label class="block overflow-hidden h-6 rounded-full bg-gray-200"></label>
-                                </div>
-                            </div>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="openChangeNameModal()"
+                                class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                                <i class="fa-solid fa-pen"></i> Đổi tên
+                            </button>
+                            <button onclick="handleLogout()"
+                                class="bg-red-50 hover:bg-red-100 text-red-500 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                            </button>
                         </div>
                     </div>
 
                     <div class="bg-red-50 rounded-[2rem] p-6 lg:p-8 border border-red-100">
                         <h3 class="text-lg font-extrabold text-vip-red mb-2">Vùng nguy hiểm</h3>
-                        <p class="text-sm text-red-400 mb-6">Xóa toàn bộ dữ liệu giao dịch và mục tiêu trên tài khoản
-                            này.</p>
+                        <p class="text-sm text-red-400 mb-6">Xóa toàn bộ dữ liệu giao dịch, ngân sách và mục tiêu trên
+                            tài khoản này.</p>
                         <button onclick="wipeAllData()"
                             class="w-full bg-white text-vip-red border border-red-200 hover:bg-vip-red hover:text-white font-bold py-3.5 rounded-xl transition shadow-sm flex justify-center items-center gap-2">
-                            <i class="fa-solid fa-trash"></i> Xóa toàn bộ dữ liệu
+                            <i class="fa-solid fa-trash"></i> Làm lại từ đầu (Xóa dữ liệu)
                         </button>
                     </div>
                 </section>
@@ -413,39 +727,70 @@
         </main>
     </div>
 
-    <!-- Bottom Navigation (Mobile) - FIXED FIXED BOTTOM -->
+    <!-- Bottom Navigation -->
     <nav
         class="lg:hidden glass-nav fixed bottom-0 w-full px-6 py-3 pb-safe z-30 flex justify-between items-center rounded-t-[2rem] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
         <button onclick="switchTab('dashboard')" data-tab="dashboard"
             class="nav-link-mobile flex flex-col items-center gap-1 text-vip-black p-2">
             <i class="fa-solid fa-house text-xl"></i>
         </button>
-        <button onclick="switchTab('reports')" data-tab="reports"
+        <button onclick="switchTab('savings')" data-tab="savings"
             class="nav-link-mobile flex flex-col items-center gap-1 text-slate-300 hover:text-slate-500 transition p-2">
-            <i class="fa-solid fa-chart-simple text-xl"></i>
+            <i class="fa-solid fa-piggy-bank text-xl"></i>
         </button>
-
         <div class="relative -top-8">
             <button onclick="toggleModal('addTransactionModal')"
                 class="w-14 h-14 bg-vip-black text-white rounded-full flex items-center justify-center text-xl shadow-floating border-4 border-[#FAFAFC] active:scale-95 transition">
                 <i class="fa-solid fa-plus text-vip-gold"></i>
             </button>
         </div>
-
+        <button onclick="switchTab('reports')" data-tab="reports"
+            class="nav-link-mobile flex flex-col items-center gap-1 text-slate-300 hover:text-slate-500 transition p-2">
+            <i class="fa-solid fa-chart-simple text-xl"></i>
+        </button>
         <button onclick="switchTab('goals')" data-tab="goals"
             class="nav-link-mobile flex flex-col items-center gap-1 text-slate-300 hover:text-slate-500 transition p-2">
             <i class="fa-solid fa-bullseye text-xl"></i>
         </button>
-        <button onclick="switchTab('security')" data-tab="security"
-            class="nav-link-mobile flex flex-col items-center gap-1 text-slate-300 hover:text-slate-500 transition p-2">
-            <i class="fa-solid fa-gear text-xl"></i>
-        </button>
     </nav>
 
-    <!-- ================= MODAL: AUTH (ĐĂNG NHẬP / ĐĂNG KÝ) ================= -->
+    <!-- MODAL: THIẾT LẬP NGÂN SÁCH -->
+    <div id="setBudgetModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleModal('setBudgetModal')"></div>
+        <div
+            class="relative bg-white rounded-t-[2.5rem] sm:rounded-[2rem] w-full max-w-lg shadow-2xl animate-slide-up flex flex-col max-h-[90vh]">
+            <div class="sm:hidden w-full flex justify-center pt-3 pb-1 shrink-0">
+                <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+            <div class="px-6 pt-4 pb-8 overflow-y-auto no-scrollbar flex-1">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-extrabold text-vip-black">Đặt ngân sách tháng</h3>
+                    <button onclick="toggleModal('setBudgetModal')"
+                        class="w-8 h-8 bg-slate-100 rounded-full text-slate-500"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p class="text-sm text-slate-500 mb-6">Bạn muốn giới hạn số tiền chi tiêu tối đa trong 1 tháng là bao
+                    nhiêu?</p>
+                <form id="budgetForm" class="space-y-5">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Số tiền ngân sách</p>
+                        <div class="flex items-center border-b-2 border-slate-200 focus-within:border-vip-accent pb-1">
+                            <span class="text-2xl font-bold text-slate-300 mr-2">₫</span>
+                            <input type="number" id="budgetInput" required min="1" placeholder="Ví dụ: 5000000"
+                                class="w-full text-3xl font-extrabold text-vip-black outline-none bg-transparent">
+                        </div>
+                    </div>
+                    <button type="button" onclick="saveBudget()"
+                        class="w-full bg-vip-accent hover:bg-indigo-600 text-white font-bold py-4 rounded-xl shadow-floating mt-4 transition">Lưu
+                        ngân sách</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: AUTH -->
     <div id="authModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleAuthModal()"></div>
-
         <div
             class="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-md animate-slide-up overflow-hidden flex flex-col max-h-[90vh]">
             <div class="px-6 py-8 overflow-y-auto no-scrollbar">
@@ -455,12 +800,9 @@
                         <p class="text-sm text-slate-500 mt-1" id="authModalDesc">Đăng nhập để đồng bộ dữ liệu</p>
                     </div>
                     <button onclick="toggleAuthModal()"
-                        class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                        class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i
+                            class="fa-solid fa-xmark"></i></button>
                 </div>
-
-                <!-- Tabs -->
                 <div class="bg-slate-100 p-1 rounded-xl flex mb-6">
                     <button onclick="switchAuthMode('login')" id="tabLoginBtn"
                         class="flex-1 py-2 rounded-lg text-sm font-bold bg-white text-vip-black shadow-sm">Đăng
@@ -468,17 +810,13 @@
                     <button onclick="switchAuthMode('register')" id="tabRegBtn"
                         class="flex-1 py-2 rounded-lg text-sm font-bold text-slate-500">Đăng ký</button>
                 </div>
-
-                <!-- Form Đăng nhập -->
                 <form id="formLogin" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tài khoản</label>
-                        <input type="text" id="loginUsername"
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tài khoản</label><input
+                            type="text" id="loginUsername"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu</label>
-                        <input type="password" id="loginPassword"
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu</label><input
+                            type="password" id="loginPassword"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
                     </div>
                     <div id="loginError" class="hidden text-vip-red text-xs font-bold text-center">Sai thông tin đăng
@@ -487,22 +825,17 @@
                         class="w-full bg-vip-black text-white font-bold py-3.5 rounded-xl shadow-floating mt-2">Đăng
                         nhập ngay</button>
                 </form>
-
-                <!-- Form Đăng ký -->
                 <form id="formRegister" class="space-y-4 hidden">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tên hiển thị</label>
-                        <input type="text" id="regFullName" placeholder="Vd: Sofi User"
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tên hiển thị</label><input
+                            type="text" id="regFullName" placeholder="Vd: Anh Tinh"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tên đăng nhập</label>
-                        <input type="text" id="regUsername" placeholder="vietlienkhongdau"
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tên đăng
+                            nhập</label><input type="text" id="regUsername" placeholder="vietlienkhongdau"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu</label>
-                        <input type="password" id="regPassword"
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu</label><input
+                            type="password" id="regPassword"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
                     </div>
                     <div id="regError" class="hidden text-vip-red text-xs font-bold text-center">Lỗi đăng ký!</div>
@@ -514,18 +847,90 @@
         </div>
     </div>
 
-    <!-- ================= MODAL: THÊM GIAO DỊCH ================= -->
+    <!-- MODAL: ĐỔI TÊN HIỂN THỊ (NEW) -->
+    <div id="changeNameModal"
+        class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleModal('changeNameModal')"></div>
+        <div
+            class="relative bg-white rounded-t-[2.5rem] sm:rounded-[2rem] w-full max-w-sm shadow-2xl animate-slide-up flex flex-col">
+            <div class="sm:hidden w-full flex justify-center pt-3 pb-1 shrink-0">
+                <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+            <div class="px-6 pt-4 pb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-extrabold text-vip-black">Đổi tên hiển thị</h3>
+                    <button onclick="toggleModal('changeNameModal')"
+                        class="w-8 h-8 bg-slate-100 rounded-full text-slate-500"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Tên mới của bạn</label>
+                        <input type="text" id="newNameInput"
+                            class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-bold text-lg">
+                    </div>
+                    <button type="button" onclick="saveNewName()"
+                        class="w-full bg-vip-black text-white font-bold py-3.5 rounded-xl shadow-floating mt-2">Lưu thay
+                        đổi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ĐỔI MẬT KHẨU (NEW) -->
+    <div id="changePasswordModal"
+        class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleModal('changePasswordModal')">
+        </div>
+        <div
+            class="relative bg-white rounded-t-[2.5rem] sm:rounded-[2rem] w-full max-w-sm shadow-2xl animate-slide-up flex flex-col max-h-[90vh]">
+            <div class="sm:hidden w-full flex justify-center pt-3 pb-1 shrink-0">
+                <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+            </div>
+            <div class="px-6 pt-4 pb-8 overflow-y-auto no-scrollbar">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-extrabold text-vip-black">Đổi mật khẩu</h3>
+                    <button onclick="toggleModal('changePasswordModal')"
+                        class="w-8 h-8 bg-slate-100 rounded-full text-slate-500"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu cũ</label>
+                        <input type="password" id="oldPasswordInput"
+                            class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mật khẩu mới</label>
+                        <input type="password" id="newPasswordInput"
+                            class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Xác nhận mật khẩu
+                            mới</label>
+                        <input type="password" id="confirmPasswordInput"
+                            class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 outline-none focus:border-vip-accent font-medium">
+                    </div>
+                    <div id="changePwdError" class="hidden text-vip-red text-xs font-bold text-center">Mật khẩu không
+                        khớp!</div>
+                    <button type="button" onclick="saveNewPassword()"
+                        class="w-full bg-vip-black text-white font-bold py-3.5 rounded-xl shadow-floating mt-2">Cập nhật
+                        mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: THÊM GIAO DỊCH -->
     <div id="addTransactionModal"
         class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleModal('addTransactionModal')">
         </div>
-
         <div
             class="relative bg-white rounded-t-[2.5rem] sm:rounded-[2rem] w-full max-w-lg shadow-2xl animate-slide-up flex flex-col max-h-[90vh]">
             <div class="sm:hidden w-full flex justify-center pt-3 pb-1 shrink-0">
                 <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
             </div>
-
             <div class="px-6 pt-4 pb-8 overflow-y-auto no-scrollbar flex-1">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-extrabold text-vip-black">Ghi chép mới</h3>
@@ -533,57 +938,48 @@
                         class="w-8 h-8 bg-slate-100 rounded-full text-slate-500"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
-
                 <form id="transactionForm" class="space-y-5">
                     <div class="bg-slate-100 p-1 rounded-xl flex">
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="type" value="expense" checked class="peer sr-only"
-                                onchange="updateCategories()">
+                        <label class="flex-1 text-center cursor-pointer"><input type="radio" name="type" value="expense"
+                                checked class="peer sr-only" onchange="updateCategories()">
                             <div
                                 class="py-2.5 rounded-lg text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-rose-500 shadow-sm transition">
                                 Chi tiêu</div>
                         </label>
-                        <label class="flex-1 text-center cursor-pointer">
-                            <input type="radio" name="type" value="income" class="peer sr-only"
-                                onchange="updateCategories()">
+                        <label class="flex-1 text-center cursor-pointer"><input type="radio" name="type" value="income"
+                                class="peer sr-only" onchange="updateCategories()">
                             <div
                                 class="py-2.5 rounded-lg text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-emerald-500 shadow-sm transition">
                                 Thu nhập</div>
                         </label>
                     </div>
-
                     <div id="errorBox"
                         class="hidden bg-red-50 text-red-500 text-xs font-bold p-2 rounded-lg text-center">Nhập số tiền
                         hợp lệ!</div>
-
                     <div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Số tiền</p>
                         <div class="flex items-center border-b-2 border-slate-200 focus-within:border-vip-accent pb-1">
-                            <span class="text-2xl font-bold text-slate-300 mr-2">₫</span>
-                            <input type="number" id="amount" required min="1" placeholder="0"
-                                class="w-full text-3xl font-extrabold text-vip-black outline-none bg-transparent">
-                        </div>
+                            <span class="text-2xl font-bold text-slate-300 mr-2">₫</span><input type="number"
+                                id="amount" required min="1" placeholder="0"
+                                class="w-full text-3xl font-extrabold text-vip-black outline-none bg-transparent"></div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Danh mục</p>
-                            <select id="category"
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Danh mục</p><select
+                                id="category"
                                 class="w-full bg-slate-50 py-3 px-3 rounded-xl border border-slate-200 font-bold outline-none"></select>
                         </div>
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ngày</p>
-                            <input type="date" id="date" required
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ngày</p><input type="date"
+                                id="date" required
                                 class="w-full bg-slate-50 py-3 px-3 rounded-xl border border-slate-200 font-bold outline-none text-sm">
                         </div>
                     </div>
-
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ghi chú (Tùy chọn)</p>
-                        <input type="text" id="note" placeholder="Dùng cho việc gì?"
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ghi chú (Tùy chọn)</p><input
+                            type="text" id="note" placeholder="Dùng cho việc gì?"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 text-sm outline-none">
                     </div>
-
                     <button type="button" onclick="saveTransaction()"
                         class="w-full bg-vip-black text-white font-bold py-4 rounded-xl shadow-floating mt-4">Xác nhận
                         lưu</button>
@@ -592,7 +988,7 @@
         </div>
     </div>
 
-    <!-- ================= MODAL: THÊM MỤC TIÊU ================= -->
+    <!-- MODAL: THÊM MỤC TIÊU -->
     <div id="addGoalModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="absolute inset-0 bg-vip-black/60 backdrop-blur-sm" onclick="toggleGoalModal()"></div>
         <div
@@ -611,23 +1007,23 @@
                         class="hidden bg-red-50 text-red-500 text-xs font-bold p-2 rounded-lg text-center">Vui lòng nhập
                         đủ thông tin!</div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Tên mục tiêu</p>
-                        <input type="text" id="goalName" required placeholder="VD: Đổi điện thoại"
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Tên mục tiêu</p><input
+                            type="text" id="goalName" required placeholder="VD: Mua xe máy"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 font-bold outline-none">
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Cần đạt (VNĐ)</p>
-                        <input type="number" id="goalAmount" required min="1" placeholder="20000000"
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Cần đạt (VNĐ)</p><input
+                            type="number" id="goalAmount" required min="1" placeholder="20000000"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 font-bold outline-none">
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Đã có sẵn (VNĐ)</p>
-                        <input type="number" id="goalSaved" value="0" min="0"
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Đã có sẵn (VNĐ)</p><input
+                            type="number" id="goalSaved" value="0" min="0"
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 font-bold outline-none">
                     </div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ngày hoàn thành</p>
-                        <input type="date" id="goalDate" required
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Ngày hoàn thành</p><input
+                            type="date" id="goalDate" required
                             class="w-full bg-slate-50 py-3 px-4 rounded-xl border border-slate-200 font-bold outline-none">
                     </div>
                     <button type="button" onclick="saveGoal()"
@@ -646,7 +1042,6 @@
     </div>
 
     <script>
-        // --- DATA ---
         const CHART_COLORS = ['#0A0A0A', '#6366F1', '#D4AF37', '#10B981', '#F43F5E', '#8B5CF6', '#CBD5E1'];
         const CATEGORIES = {
             expense: {
@@ -666,23 +1061,49 @@
             }
         };
 
-        // --- GLOBAL STATE ---
-        let currentUser = 'guest'; // Mặc định là guest
+        let currentUser = 'guest';
         let currentUserName = 'Khách (Dùng thử)';
         let isGuest = true;
         let transactions = [];
         let goals = [];
+        let currentBudget = 0;
         let myChart = null;
         let myBarChart = null;
 
-        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
             checkAuth();
+            checkOnboarding();
             document.getElementById('date').valueAsDate = new Date();
             setGreetingDate();
             updateCategories();
         });
+
+        // Đóng dropdown khi click ra ngoài
+        document.addEventListener('click', function (event) {
+            const dpDesk = document.getElementById('profileDropdownDesktop');
+            const btnDesk = document.getElementById('profileBtnDesktop');
+            const dpMob = document.getElementById('profileDropdownMobile');
+            const btnMob = document.getElementById('profileBtnMobile');
+
+            if (dpDesk && !dpDesk.classList.contains('hidden') && !dpDesk.contains(event.target) && !btnDesk.contains(event.target)) {
+                dpDesk.classList.add('hidden');
+            }
+            if (dpMob && !dpMob.classList.contains('hidden') && !dpMob.contains(event.target) && !btnMob.contains(event.target)) {
+                dpMob.classList.add('hidden');
+            }
+        });
+
+        // --- ONBOARDING LOGIC ---
+        function checkOnboarding() {
+            const hasSeen = localStorage.getItem(`sofi_onboarded_${currentUser}`);
+            if (!hasSeen) { document.getElementById('onboardingModal').classList.remove('hidden'); }
+        }
+        function finishOnboarding() {
+            localStorage.setItem(`sofi_onboarded_${currentUser}`, 'true');
+            document.getElementById('onboardingModal').classList.add('hidden');
+            if (currentBudget === 0) setTimeout(() => toggleModal('setBudgetModal'), 500);
+        }
 
         // --- AUTH & DATA LOGIC ---
         function checkAuth() {
@@ -693,9 +1114,7 @@
                 currentUserName = userObj.fullname;
                 isGuest = false;
             } else {
-                currentUser = 'guest';
-                currentUserName = 'Khách (Dùng thử)';
-                isGuest = true;
+                currentUser = 'guest'; currentUserName = 'Khách (Dùng thử)'; isGuest = true;
             }
             updateUIForUser();
             loadUserData();
@@ -703,173 +1122,254 @@
             renderGoalsList();
         }
 
+        // Hàm hỗ trợ tạo chữ cái avatar giống trong ảnh (VD: Anh Tinh -> AN)
+        function getInitials(name) {
+            if (isGuest) return "G";
+            const parts = name.trim().toUpperCase().split(' ');
+            if (parts.length >= 2) return parts[0].charAt(0) + parts[1].charAt(0);
+            return parts[0].substring(0, 2);
+        }
+
         function updateUIForUser() {
-            // Update Text
-            document.getElementById('userNameMobile').innerText = currentUserName;
-            document.getElementById('userNameDesktop').innerText = currentUserName;
+            const nameMobile = document.getElementById('userNameMobile');
+            const nameDesktop = document.getElementById('userNameDesktop');
+            nameMobile.innerText = currentUserName;
+            nameDesktop.innerText = currentUserName;
+
+            // Xử lý hiển thị Avatar và Tích xanh chuẩn theo thiết kế "Profile Pill"
+            const imgDesktop = document.getElementById('userAvatarDesktop');
+            const imgMobile = document.getElementById('userAvatarMobile');
+            const badgeDesktop = document.getElementById('verifiedBadgeDesktop');
+            const badgeMobile = document.getElementById('verifiedBadgeMobile');
+            const btnDesk = document.getElementById('profileBtnDesktop');
+            const btnMob = document.getElementById('profileBtnMobile');
+
+            // Cập nhật tên trong dropdown
+            if (document.getElementById('dropdownUsernameDesktop')) document.getElementById('dropdownUsernameDesktop').innerText = '@' + currentUser;
+            if (document.getElementById('dropdownUsernameMobile')) document.getElementById('dropdownUsernameMobile').innerText = '@' + currentUser;
             document.getElementById('settingName').innerText = currentUserName;
             document.getElementById('settingUsername').innerText = currentUser;
 
-            // Update Avatars
-            const bg = isGuest ? 'E2E8F0' : '0A0A0A';
-            const col = isGuest ? '64748B' : 'D4AF37';
-            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUserName)}&background=${bg}&color=${col}&rounded=true&bold=true`;
-
-            document.getElementById('userAvatarMobile').src = avatarUrl;
-            document.getElementById('userAvatarDesktop').src = avatarUrl;
-            document.getElementById('settingAvatar').src = avatarUrl;
-
-            // Verified Badges & Sections
-            const badges = [document.getElementById('verifiedBadgeMobile'), document.getElementById('verifiedBadgeDesktop')];
             if (isGuest) {
-                badges.forEach(b => { b.classList.remove('text-vip-accent'); b.classList.add('text-slate-300'); });
+                imgDesktop.src = `https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B&rounded=true&bold=true`;
+                imgMobile.src = `https://ui-avatars.com/api/?name=Guest&background=E2E8F0&color=64748B&rounded=true&bold=true`;
+                document.getElementById('settingAvatar').src = imgDesktop.src;
+
+                badgeDesktop.className = 'fa-solid fa-circle-check text-slate-300 text-[18px]';
+                badgeMobile.className = 'fa-solid fa-circle-check text-slate-300 text-sm ml-0.5';
+
+                btnDesk.disabled = true; btnDesk.classList.remove('hover:shadow-md', 'cursor-pointer');
+                btnMob.disabled = true; btnMob.classList.remove('hover:shadow-md', 'cursor-pointer');
+
                 document.getElementById('guestPromoBox').classList.remove('hidden');
                 document.getElementById('userProfileBox').classList.add('hidden');
-
                 document.getElementById('sidebarLoginBtn').classList.remove('hidden');
                 document.getElementById('sidebarLogoutBtn').classList.add('hidden');
             } else {
-                badges.forEach(b => { b.classList.add('text-vip-accent'); b.classList.remove('text-slate-300'); });
-                document.getElementById('guestPromoBox').classList.add('hidden');
-                document.getElementById('userProfileBox').classList.remove('hidden');
-                document.getElementById('userProfileBox').classList.add('flex'); // Because default was hidden
+                // Đổi thành avatar viền đen nền đen giống hình cung cấp
+                const initials = getInitials(currentUserName);
+                const avtHtml = `https://ui-avatars.com/api/?name=${initials}&background=0A0A0A&color=D4AF37&rounded=true&bold=true&font-size=0.4`;
+                imgDesktop.src = avtHtml;
+                imgMobile.src = avtHtml;
+                document.getElementById('settingAvatar').src = avtHtml;
 
+                badgeDesktop.className = 'fa-solid fa-circle-check text-indigo-500 text-[18px]';
+                badgeMobile.className = 'fa-solid fa-circle-check text-indigo-500 text-sm ml-0.5';
+
+                btnDesk.disabled = false; btnDesk.classList.add('hover:shadow-md', 'cursor-pointer');
+                btnMob.disabled = false; btnMob.classList.add('hover:shadow-md', 'cursor-pointer');
+
+                document.getElementById('guestPromoBox').classList.add('hidden');
+                document.getElementById('userProfileBox').classList.remove('hidden'); document.getElementById('userProfileBox').classList.add('flex');
                 document.getElementById('sidebarLoginBtn').classList.add('hidden');
                 document.getElementById('sidebarLogoutBtn').classList.remove('hidden');
             }
         }
 
+        // Bật tắt Menu Tên Người Dùng
+        function toggleProfileMenu(type) {
+            if (isGuest) {
+                toggleAuthModal();
+                return;
+            }
+            if (type === 'desktop') {
+                const dp = document.getElementById('profileDropdownDesktop');
+                dp.classList.toggle('hidden');
+            } else {
+                const dp = document.getElementById('profileDropdownMobile');
+                dp.classList.toggle('hidden');
+            }
+        }
+
+        // Logic đổi Tên / Mật khẩu
+        function openChangeNameModal() {
+            document.getElementById('profileDropdownDesktop').classList.add('hidden');
+            document.getElementById('profileDropdownMobile').classList.add('hidden');
+            document.getElementById('newNameInput').value = currentUserName;
+            toggleModal('changeNameModal');
+        }
+
+        function saveNewName() {
+            const newName = document.getElementById('newNameInput').value.trim();
+            if (!newName) return;
+
+            let users = JSON.parse(localStorage.getItem('sofi_users'));
+            users[currentUser].fullname = newName;
+            localStorage.setItem('sofi_users', JSON.stringify(users));
+
+            currentUserName = newName;
+            localStorage.setItem('sofi_current_user', JSON.stringify({ username: currentUser, fullname: newName }));
+
+            updateUIForUser();
+            toggleModal('changeNameModal');
+            showToast('Đổi tên thành công!');
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('profileDropdownDesktop').classList.add('hidden');
+            document.getElementById('profileDropdownMobile').classList.add('hidden');
+            document.getElementById('oldPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('confirmPasswordInput').value = '';
+            document.getElementById('changePwdError').classList.add('hidden');
+            toggleModal('changePasswordModal');
+        }
+
+        function saveNewPassword() {
+            const oldP = document.getElementById('oldPasswordInput').value;
+            const newP = document.getElementById('newPasswordInput').value;
+            const cfmP = document.getElementById('confirmPasswordInput').value;
+            const err = document.getElementById('changePwdError');
+
+            let users = JSON.parse(localStorage.getItem('sofi_users'));
+            if (users[currentUser].password !== oldP) {
+                err.innerText = "Mật khẩu cũ không đúng!"; err.classList.remove('hidden'); return;
+            }
+            if (newP !== cfmP) {
+                err.innerText = "Mật khẩu mới không khớp!"; err.classList.remove('hidden'); return;
+            }
+            if (newP.length < 6) {
+                err.innerText = "Mật khẩu quá ngắn (ít nhất 6 ký tự)!"; err.classList.remove('hidden'); return;
+            }
+
+            users[currentUser].password = newP;
+            localStorage.setItem('sofi_users', JSON.stringify(users));
+
+            toggleModal('changePasswordModal');
+            showToast('Cập nhật mật khẩu thành công!');
+        }
+
         function loadUserData() {
             transactions = JSON.parse(localStorage.getItem(`sofi_tx_${currentUser}`)) || [];
             goals = JSON.parse(localStorage.getItem(`sofi_gl_${currentUser}`)) || [];
+            currentBudget = parseFloat(localStorage.getItem(`sofi_bg_${currentUser}`)) || 0;
         }
         function saveData() { localStorage.setItem(`sofi_tx_${currentUser}`, JSON.stringify(transactions)); }
         function saveGoalsData() { localStorage.setItem(`sofi_gl_${currentUser}`, JSON.stringify(goals)); }
+        function saveBudgetData() { localStorage.setItem(`sofi_bg_${currentUser}`, currentBudget); }
 
-        // --- AUTH MODAL LOGIC ---
         function toggleAuthModal() {
-            const modal = document.getElementById('authModal');
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                switchAuthMode('login');
-            } else {
-                modal.classList.add('hidden');
-            }
+            const m = document.getElementById('authModal');
+            if (m.classList.contains('hidden')) { m.classList.remove('hidden'); switchAuthMode('login'); }
+            else m.classList.add('hidden');
         }
-
         function switchAuthMode(mode) {
-            const formLogin = document.getElementById('formLogin');
-            const formReg = document.getElementById('formRegister');
-            const btnLogin = document.getElementById('tabLoginBtn');
-            const btnReg = document.getElementById('tabRegBtn');
-
-            document.getElementById('loginError').classList.add('hidden');
-            document.getElementById('regError').classList.add('hidden');
-
+            document.getElementById('loginError').classList.add('hidden'); document.getElementById('regError').classList.add('hidden');
             if (mode === 'login') {
-                formLogin.classList.remove('hidden');
-                formReg.classList.add('hidden');
-                btnLogin.className = "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-vip-black shadow-sm";
-                btnReg.className = "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500";
+                document.getElementById('formLogin').classList.remove('hidden'); document.getElementById('formRegister').classList.add('hidden');
+                document.getElementById('tabLoginBtn').className = "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-vip-black shadow-sm";
+                document.getElementById('tabRegBtn').className = "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500";
             } else {
-                formReg.classList.remove('hidden');
-                formLogin.classList.add('hidden');
-                btnReg.className = "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-vip-black shadow-sm";
-                btnLogin.className = "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500";
+                document.getElementById('formRegister').classList.remove('hidden'); document.getElementById('formLogin').classList.add('hidden');
+                document.getElementById('tabRegBtn').className = "flex-1 py-2 rounded-lg text-sm font-bold bg-white text-vip-black shadow-sm";
+                document.getElementById('tabLoginBtn').className = "flex-1 py-2 rounded-lg text-sm font-bold text-slate-500";
             }
         }
-
         function handleRegister() {
-            const full = document.getElementById('regFullName').value.trim();
-            const usr = document.getElementById('regUsername').value.trim().toLowerCase();
-            const pass = document.getElementById('regPassword').value;
-            const err = document.getElementById('regError');
-
-            if (!full || !usr || !pass) { err.innerText = "Nhập đủ thông tin!"; err.classList.remove('hidden'); return; }
-
+            const f = document.getElementById('regFullName').value.trim(); const u = document.getElementById('regUsername').value.trim().toLowerCase();
+            const p = document.getElementById('regPassword').value; const err = document.getElementById('regError');
+            if (!f || !u || !p) { err.innerText = "Nhập đủ thông tin!"; err.classList.remove('hidden'); return; }
             let users = JSON.parse(localStorage.getItem('sofi_users')) || {};
-            if (users[usr]) { err.innerText = "Tài khoản đã tồn tại!"; err.classList.remove('hidden'); return; }
-
-            users[usr] = { fullname: full, password: pass };
-            localStorage.setItem('sofi_users', JSON.stringify(users));
-            localStorage.setItem('sofi_current_user', JSON.stringify({ username: usr, fullname: full }));
-
-            toggleAuthModal();
-            checkAuth(); // Reload data for new user
-            showToast('Đăng ký & Đăng nhập thành công!');
+            if (users[u]) { err.innerText = "Tài khoản đã tồn tại!"; err.classList.remove('hidden'); return; }
+            users[u] = { fullname: f, password: p }; localStorage.setItem('sofi_users', JSON.stringify(users));
+            localStorage.setItem('sofi_current_user', JSON.stringify({ username: u, fullname: f }));
+            toggleAuthModal(); checkAuth(); checkOnboarding(); showToast('Đăng ký thành công!');
         }
-
         function handleLogin() {
-            const usr = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPassword').value;
+            const u = document.getElementById('loginUsername').value.trim().toLowerCase(); const p = document.getElementById('loginPassword').value;
             const err = document.getElementById('loginError');
-
-            if (!usr || !pass) { err.innerText = "Nhập đủ thông tin!"; err.classList.remove('hidden'); return; }
-
+            if (!u || !p) { err.innerText = "Nhập đủ thông tin!"; err.classList.remove('hidden'); return; }
             let users = JSON.parse(localStorage.getItem('sofi_users')) || {};
-            if (users[usr] && users[usr].password === pass) {
-                localStorage.setItem('sofi_current_user', JSON.stringify({ username: usr, fullname: users[usr].fullname }));
-                toggleAuthModal();
-                checkAuth(); // Switch to user data
-                showToast('Chào mừng trở lại!');
-            } else {
-                err.innerText = "Sai tài khoản hoặc mật khẩu!"; err.classList.remove('hidden');
-            }
+            if (users[u] && users[u].password === p) {
+                localStorage.setItem('sofi_current_user', JSON.stringify({ username: u, fullname: users[u].fullname }));
+                toggleAuthModal(); checkAuth(); showToast('Chào mừng trở lại!');
+            } else { err.innerText = "Sai tài khoản/mật khẩu!"; err.classList.remove('hidden'); }
         }
-
         function handleLogout() {
+            // Đóng menu nếu đang mở
+            document.getElementById('profileDropdownDesktop').classList.add('hidden');
+            document.getElementById('profileDropdownMobile').classList.add('hidden');
+
             localStorage.removeItem('sofi_current_user');
-            checkAuth(); // Switch back to guest
-            switchTab('dashboard'); // Return to home
+            checkAuth();
+            switchTab('dashboard');
             showToast('Đã đăng xuất!');
         }
 
-        // --- NAVIGATION ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
-            document.getElementById('view-' + tabId).classList.remove('hidden');
-            document.getElementById('view-' + tabId).classList.add('block');
+            document.getElementById('view-' + tabId).classList.remove('hidden'); document.getElementById('view-' + tabId).classList.add('block');
+            document.querySelectorAll('.nav-link').forEach(el => { el.classList.remove('bg-vip-black', 'text-white', 'shadow-premium'); el.classList.add('text-slate-500'); });
 
-            // Desktop Nav
-            document.querySelectorAll('.nav-link').forEach(el => {
-                el.classList.remove('bg-vip-black', 'text-white', 'shadow-premium');
-                el.classList.add('text-slate-500');
-            });
-            document.querySelector(`.nav-link[data-tab="${tabId}"]`).classList.add('bg-vip-black', 'text-white', 'shadow-premium');
-            document.querySelector(`.nav-link[data-tab="${tabId}"]`).classList.remove('text-slate-500');
+            const activeNavLink = document.querySelector(`.nav-link[data-tab="${tabId}"]`);
+            if (activeNavLink) {
+                activeNavLink.classList.add('bg-vip-black', 'text-white', 'shadow-premium');
+                activeNavLink.classList.remove('text-slate-500');
+            }
 
-            // Mobile Nav
             document.querySelectorAll('.nav-link-mobile').forEach(el => { el.classList.remove('text-vip-black'); el.classList.add('text-slate-300'); });
-            document.querySelector(`.nav-link-mobile[data-tab="${tabId}"]`).classList.add('text-vip-black');
-            document.querySelector(`.nav-link-mobile[data-tab="${tabId}"]`).classList.remove('text-slate-300');
+            const activeMobLink = document.querySelector(`.nav-link-mobile[data-tab="${tabId}"]`);
+            if (activeMobLink) {
+                activeMobLink.classList.add('text-vip-black');
+                activeMobLink.classList.remove('text-slate-300');
+            }
 
-            const titles = { 'dashboard': 'Bảng điều khiển', 'reports': 'Báo cáo', 'goals': 'Mục tiêu', 'security': 'Cài đặt' };
+            const titles = { 'dashboard': 'Bảng điều khiển', 'savings': 'Tình hình Tiết kiệm', 'reports': 'Báo cáo', 'goals': 'Mục tiêu', 'security': 'Cài đặt' };
             document.getElementById('pageTitle').innerText = titles[tabId];
-
             if (tabId === 'dashboard') renderChart();
             if (tabId === 'reports') renderReportsView();
+            if (tabId === 'savings') renderSavingsView();
         }
 
-        // --- UTILS ---
         function setGreetingDate() { document.getElementById('greetingDate').innerText = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' }); }
         function formatMoney(amount) { return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫'; }
         function showToast(msg, isErr = false) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMessage').innerText = msg;
+            const t = document.getElementById('toast'); document.getElementById('toastMessage').innerText = msg;
             document.getElementById('toastIcon').className = isErr ? 'fa-solid fa-circle-exclamation text-vip-red' : 'fa-solid fa-circle-check text-vip-gold';
             t.classList.remove('-translate-y-24', 'opacity-0'); t.classList.add('translate-y-4', 'opacity-100');
             setTimeout(() => { t.classList.add('-translate-y-24', 'opacity-0'); t.classList.remove('translate-y-4', 'opacity-100'); }, 3000);
         }
 
-        // --- TRANSACTION ---
         function toggleModal(id) {
             const m = document.getElementById(id);
             if (m.classList.contains('hidden')) {
-                m.classList.remove('hidden'); document.getElementById('transactionForm').reset();
-                document.getElementById('date').valueAsDate = new Date(); document.getElementById('errorBox').classList.add('hidden');
-                updateCategories(); setTimeout(() => document.getElementById('amount').focus(), 100);
+                m.classList.remove('hidden');
+                if (id === 'addTransactionModal') {
+                    document.getElementById('transactionForm').reset(); document.getElementById('date').valueAsDate = new Date();
+                    document.getElementById('errorBox').classList.add('hidden'); updateCategories(); setTimeout(() => document.getElementById('amount').focus(), 100);
+                } else if (id === 'setBudgetModal') {
+                    document.getElementById('budgetInput').value = currentBudget > 0 ? currentBudget : '';
+                    setTimeout(() => document.getElementById('budgetInput').focus(), 100);
+                }
             } else { m.classList.add('hidden'); }
         }
+
+        function saveBudget() {
+            const val = parseFloat(document.getElementById('budgetInput').value);
+            if (isNaN(val) || val <= 0) { showToast('Vui lòng nhập số hợp lệ!', true); return; }
+            currentBudget = val; saveBudgetData(); toggleModal('setBudgetModal'); showToast('Đã lưu ngân sách!'); renderApp();
+        }
+
         function updateCategories() {
             const type = document.querySelector('input[name="type"]:checked').value;
             const sel = document.getElementById('category'); sel.innerHTML = '';
@@ -878,56 +1378,194 @@
         function saveTransaction() {
             const amt = parseFloat(document.getElementById('amount').value);
             if (isNaN(amt) || amt <= 0) { document.getElementById('errorBox').classList.remove('hidden'); return; }
-
             const type = document.querySelector('input[name="type"]:checked').value;
             const date = document.getElementById('date').value || new Date().toISOString().split('T')[0];
-            const cat = document.getElementById('category').value;
-            const note = document.getElementById('note').value;
-
+            const cat = document.getElementById('category').value; const note = document.getElementById('note').value;
             transactions.unshift({ id: Date.now().toString(), type, amount: amt, category: cat, date, note });
             transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
             saveData(); toggleModal('addTransactionModal'); showToast('Đã lưu!'); renderApp();
         }
-        function deleteTransaction(id) {
-            if (confirm('Xóa giao dịch này?')) { transactions = transactions.filter(t => t.id !== id); saveData(); renderApp(); showToast('Đã xóa'); }
-        }
+        function deleteTransaction(id) { if (confirm('Xóa giao dịch này?')) { transactions = transactions.filter(t => t.id !== id); saveData(); renderApp(); showToast('Đã xóa'); } }
 
-        // --- GOALS ---
         function toggleGoalModal() {
             const m = document.getElementById('addGoalModal');
-            if (m.classList.contains('hidden')) {
-                m.classList.remove('hidden'); document.getElementById('goalForm').reset();
-                document.getElementById('goalSaved').value = 0; document.getElementById('goalErrorBox').classList.add('hidden');
-            } else { m.classList.add('hidden'); }
+            if (m.classList.contains('hidden')) { m.classList.remove('hidden'); document.getElementById('goalForm').reset(); document.getElementById('goalSaved').value = 0; document.getElementById('goalErrorBox').classList.add('hidden'); }
+            else m.classList.add('hidden');
         }
         function saveGoal() {
-            const name = document.getElementById('goalName').value.trim();
-            const target = parseFloat(document.getElementById('goalAmount').value);
-            const saved = parseFloat(document.getElementById('goalSaved').value) || 0;
-            const date = document.getElementById('goalDate').value;
+            const name = document.getElementById('goalName').value.trim(); const target = parseFloat(document.getElementById('goalAmount').value);
+            const saved = parseFloat(document.getElementById('goalSaved').value) || 0; const date = document.getElementById('goalDate').value;
             if (!name || !target || !date || target <= 0) { document.getElementById('goalErrorBox').classList.remove('hidden'); return; }
-
             const icons = [{ i: 'fa-house', c: 'indigo' }, { i: 'fa-plane', c: 'emerald' }, { i: 'fa-car', c: 'blue' }, { i: 'fa-piggy-bank', c: 'rose' }];
             const st = icons[goals.length % icons.length];
             goals.push({ id: Date.now().toString(), name, target, saved, date, icon: st.i, color: st.c });
-
             saveGoalsData(); toggleGoalModal(); showToast('Đã tạo mục tiêu'); renderGoalsList();
         }
-        function deleteGoal(id) {
-            if (confirm('Xóa mục tiêu này?')) { goals = goals.filter(g => g.id !== id); saveGoalsData(); renderGoalsList(); showToast('Đã xóa'); }
-        }
+        function deleteGoal(id) { if (confirm('Xóa mục tiêu này?')) { goals = goals.filter(g => g.id !== id); saveGoalsData(); renderGoalsList(); showToast('Đã xóa'); } }
 
         function wipeAllData() {
             if (confirm('Xóa vĩnh viễn dữ liệu tài khoản này?')) {
-                localStorage.removeItem(`sofi_tx_${currentUser}`); localStorage.removeItem(`sofi_gl_${currentUser}`);
-                transactions = []; goals = []; renderApp(); renderGoalsList(); switchTab('dashboard'); showToast('Đã xóa sạch!');
+                localStorage.removeItem(`sofi_tx_${currentUser}`); localStorage.removeItem(`sofi_gl_${currentUser}`); localStorage.removeItem(`sofi_bg_${currentUser}`);
+                transactions = []; goals = []; currentBudget = 0; renderApp(); renderGoalsList(); switchTab('dashboard'); showToast('Đã xóa sạch!');
             }
         }
 
-        // --- RENDERING ---
+        function calculatePlan() {
+            const inc = parseFloat(document.getElementById('planIncome').value) || 0;
+            const rent = parseFloat(document.getElementById('planRent').value) || 0;
+            const food = parseFloat(document.getElementById('planFood').value) || 0;
+            const trans = parseFloat(document.getElementById('planTransport').value) || 0;
+            const other = parseFloat(document.getElementById('planOther').value) || 0;
+
+            const exp = rent + food + trans + other;
+            const sav = inc - exp;
+
+            const resultEl = document.getElementById('planResult');
+            const pBar = document.getElementById('planProgressBar');
+            const pMsg = document.getElementById('planMessage');
+
+            resultEl.innerText = formatMoney(sav);
+
+            if (inc > 0) {
+                const percent = Math.max(0, Math.min((sav / inc) * 100, 100));
+                pBar.style.width = `${percent}%`;
+
+                if (sav > 0) {
+                    pBar.className = 'bg-emerald-500 h-2 rounded-full transition-all duration-500';
+                    resultEl.className = 'text-4xl font-extrabold text-emerald-500 text-center mb-4 transition-colors duration-300';
+                    pMsg.innerText = `Bạn sẽ để dành được ${percent.toFixed(1)}% thu nhập!`;
+                    pMsg.className = 'text-xs text-center text-emerald-600 font-medium h-4';
+                } else if (sav === 0) {
+                    pBar.className = 'bg-vip-warning h-2 rounded-full transition-all duration-500';
+                    resultEl.className = 'text-4xl font-extrabold text-vip-warning text-center mb-4 transition-colors duration-300';
+                    pMsg.innerText = `Bạn tiêu vừa hết sạch thu nhập.`;
+                    pMsg.className = 'text-xs text-center text-amber-600 font-medium h-4';
+                } else {
+                    pBar.style.width = '100%';
+                    pBar.className = 'bg-rose-500 h-2 rounded-full transition-all duration-500';
+                    resultEl.className = 'text-4xl font-extrabold text-rose-500 text-center mb-4 transition-colors duration-300';
+                    pMsg.innerText = `Cảnh báo: Bạn đang chi âm vốn!`;
+                    pMsg.className = 'text-xs text-center text-rose-500 font-bold h-4';
+                }
+            } else {
+                pBar.style.width = '0%';
+                resultEl.className = 'text-4xl font-extrabold text-slate-300 text-center mb-4 transition-colors duration-300';
+                pMsg.innerText = `Điền số tiền để bắt đầu mô phỏng`;
+                pMsg.className = 'text-xs text-center text-slate-400 font-medium h-4';
+            }
+        }
+
+        function savePlanToTransactions() {
+            const inc = parseFloat(document.getElementById('planIncome').value) || 0;
+            const rent = parseFloat(document.getElementById('planRent').value) || 0;
+            const food = parseFloat(document.getElementById('planFood').value) || 0;
+            const trans = parseFloat(document.getElementById('planTransport').value) || 0;
+            const other = parseFloat(document.getElementById('planOther').value) || 0;
+
+            if (inc === 0 && rent === 0 && food === 0 && trans === 0 && other === 0) {
+                showToast('Vui lòng nhập số tiền!', true);
+                return;
+            }
+
+            const date = new Date().toISOString().split('T')[0];
+
+            if (inc > 0) transactions.unshift({ id: Date.now().toString() + '1', type: 'income', amount: inc, category: 'Tiền lương', date: date, note: 'Lương (Dự toán)' });
+            if (rent > 0) transactions.unshift({ id: Date.now().toString() + '2', type: 'expense', amount: rent, category: 'Nhà ở', date: date, note: 'Tiền nhà (Dự toán)' });
+            if (food > 0) transactions.unshift({ id: Date.now().toString() + '3', type: 'expense', amount: food, category: 'Ăn uống', date: date, note: 'Tiền ăn (Dự toán)' });
+            if (trans > 0) transactions.unshift({ id: Date.now().toString() + '4', type: 'expense', amount: trans, category: 'Di chuyển', date: date, note: 'Xăng xe (Dự toán)' });
+            if (other > 0) transactions.unshift({ id: Date.now().toString() + '5', type: 'expense', amount: other, category: 'Khác', date: date, note: 'Chi tiêu khác (Dự toán)' });
+
+            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            saveData();
+
+            document.getElementById('planIncome').value = ''; document.getElementById('planRent').value = '';
+            document.getElementById('planFood').value = ''; document.getElementById('planTransport').value = '';
+            document.getElementById('planOther').value = '';
+            calculatePlan();
+
+            renderApp(); showToast('Đã áp dụng toàn bộ vào sổ!');
+        }
+
+        function renderSavingsView() {
+            const curMonth = new Date().getMonth(); const curYear = new Date().getFullYear();
+            document.getElementById('savingsMonthStr').innerText = `${curMonth + 1}/${curYear}`;
+            let mInc = 0, mExp = 0; const catExpenses = {};
+            transactions.forEach(t => {
+                const d = new Date(t.date);
+                if (d.getMonth() === curMonth && d.getFullYear() === curYear) {
+                    if (t.type === 'income') mInc += t.amount;
+                    else { mExp += t.amount; catExpenses[t.category] = (catExpenses[t.category] || 0) + t.amount; }
+                }
+            });
+            const mSav = mInc - mExp; let pSav = 0, pExp = 0;
+            if (mInc > 0) { pSav = ((mSav / mInc) * 100).toFixed(1); pExp = ((mExp / mInc) * 100).toFixed(1); } else { pExp = mExp > 0 ? 100 : 0; pSav = 0; }
+            document.getElementById('savIncome').innerText = formatMoney(mInc); document.getElementById('savExpense').innerText = formatMoney(mExp); document.getElementById('savTotal').innerText = formatMoney(mSav);
+
+            const savPercentEl = document.getElementById('savPercent');
+            if (mSav >= 0) {
+                savPercentEl.innerText = mInc > 0 ? `Tiết kiệm được ${pSav}% thu nhập` : `Tích lũy ${formatMoney(mSav)}`;
+                savPercentEl.className = 'text-sm font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 mb-2';
+            } else {
+                savPercentEl.innerText = `Thâm hụt vốn ${formatMoney(Math.abs(mSav))}`;
+                savPercentEl.className = 'text-sm font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 mb-2';
+            }
+            document.getElementById('savBarIncomeText').innerText = formatMoney(mInc);
+            document.getElementById('savBarExpPercent').innerText = `${pExp}%`;
+            document.getElementById('savBarSavPercent').innerText = mSav >= 0 ? `${pSav}%` : '0%';
+
+            const fillExp = Math.min(pExp, 100); const fillSav = mSav >= 0 ? 100 - fillExp : 0;
+            document.getElementById('savBarExpFill').style.width = `${fillExp}%`; document.getElementById('savBarSavFill').style.width = `${fillSav}%`;
+
+            const list = document.getElementById('savExpenseList'); const noData = document.getElementById('noSavData'); list.innerHTML = '';
+            const sorted = Object.entries(catExpenses).sort((a, b) => b[1] - a[1]);
+            if (sorted.length === 0) { noData.classList.remove('hidden'); } else {
+                noData.classList.add('hidden');
+                sorted.forEach(([cat, amt]) => {
+                    const ci = CATEGORIES.expense[cat] || { icon: 'fa-circle', bg: 'bg-slate-100', text: 'text-slate-500' };
+                    list.innerHTML += `<div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl ${ci.bg} ${ci.text} flex items-center justify-center text-lg"><i class="fa-solid ${ci.icon}"></i></div><div><h4 class="font-bold text-vip-black text-sm">${cat}</h4><p class="text-xs text-slate-500">Trừ vào thu nhập</p></div></div><span class="font-bold text-rose-500">-${formatMoney(amt)}</span></div>`;
+                });
+            }
+        }
+
         function renderApp() {
-            let tInc = 0, tExp = 0;
-            transactions.forEach(t => { if (t.type === 'income') tInc += t.amount; else tExp += t.amount; });
+            let tInc = 0, tExp = 0, mExp = 0;
+            const curMonth = new Date().getMonth(); const curYear = new Date().getFullYear();
+
+            transactions.forEach(t => {
+                const d = new Date(t.date);
+                if (t.type === 'income') tInc += t.amount;
+                else {
+                    tExp += t.amount;
+                    if (d.getMonth() === curMonth && d.getFullYear() === curYear) mExp += t.amount;
+                }
+            });
+
+            // Update Budget UI
+            document.getElementById('budgetTotalDisplay').innerText = `/ ${formatMoney(currentBudget)}`;
+            document.getElementById('budgetSpentDisplay').innerText = formatMoney(mExp);
+            const pBar = document.getElementById('budgetProgressBar');
+            const statusTxt = document.getElementById('budgetStatusText');
+            const pTxt = document.getElementById('budgetPercentDisplay');
+
+            if (currentBudget === 0) {
+                pBar.style.width = '0%'; pBar.className = 'h-4 rounded-full transition-all duration-700 bg-slate-200 w-0';
+                statusTxt.innerText = "Vui lòng đặt ngân sách"; pTxt.innerText = "0%";
+            } else {
+                let percent = (mExp / currentBudget) * 100;
+                pTxt.innerText = percent.toFixed(1) + "%";
+                if (percent <= 50) {
+                    pBar.className = 'h-4 rounded-full transition-all duration-700 bg-emerald-500 progress-striped';
+                    statusTxt.innerText = "Chi tiêu an toàn";
+                } else if (percent <= 85) {
+                    pBar.className = 'h-4 rounded-full transition-all duration-700 bg-vip-warning progress-striped';
+                    statusTxt.innerText = "Cần chú ý";
+                } else {
+                    pBar.className = 'h-4 rounded-full transition-all duration-700 bg-vip-red progress-striped animate-pulse';
+                    statusTxt.innerText = percent > 100 ? "VƯỢT NGÂN SÁCH!" : "Sắp hết ngân sách";
+                }
+                pBar.style.width = Math.min(percent, 100) + '%';
+            }
+
             document.getElementById('totalBalance').innerText = formatMoney(tInc - tExp);
             document.getElementById('totalIncome').innerText = formatMoney(tInc);
             document.getElementById('totalExpense').innerText = formatMoney(tExp);
@@ -946,10 +1584,7 @@
                         <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition group">
                             <div class="flex items-center gap-4 truncate">
                                 <div class="w-12 h-12 rounded-full ${cInfo.bg} ${cInfo.text} flex items-center justify-center text-lg shrink-0"><i class="fa-solid ${cInfo.icon}"></i></div>
-                                <div class="truncate">
-                                    <h4 class="font-bold text-sm text-vip-black truncate">${t.category}</h4>
-                                    <p class="text-[11px] text-slate-400 truncate">${t.note || dateDisp}</p>
-                                </div>
+                                <div class="truncate"><h4 class="font-bold text-sm text-vip-black truncate">${t.category}</h4><p class="text-[11px] text-slate-400 truncate">${t.note || dateDisp}</p></div>
                             </div>
                             <div class="flex items-center gap-3 shrink-0">
                                 <span class="font-bold text-sm ${isInc ? 'text-emerald-500' : 'text-vip-black'}">${isInc ? '+' : '-'}${formatMoney(t.amount)}</span>
@@ -959,13 +1594,13 @@
                 });
             }
             if (!document.getElementById('view-dashboard').classList.contains('hidden')) renderChart();
+            if (!document.getElementById('view-savings').classList.contains('hidden')) renderSavingsView();
         }
 
         function renderChart() {
             const ctx = document.getElementById('expenseChart').getContext('2d');
             const exp = transactions.filter(t => t.type === 'expense');
             if (exp.length === 0) { document.getElementById('noChartData').classList.remove('hidden'); document.getElementById('chartCenterText').classList.add('hidden'); if (myChart) myChart.destroy(); return; }
-
             document.getElementById('noChartData').classList.add('hidden'); document.getElementById('chartCenterText').classList.remove('hidden');
             const grp = {}; exp.forEach(t => grp[t.category] = (grp[t.category] || 0) + t.amount);
             if (myChart) myChart.destroy();
@@ -979,25 +1614,18 @@
             const ctx = document.getElementById('barChart').getContext('2d');
             let i = 0, e = 0; const cats = {};
             transactions.forEach(t => { if (t.type === 'income') i += t.amount; else { e += t.amount; cats[t.category] = (cats[t.category] || 0) + t.amount; } });
-
             if (myBarChart) myBarChart.destroy();
             myBarChart = new Chart(ctx, {
                 type: 'bar', data: { labels: ['Thu nhập', 'Chi tiêu'], datasets: [{ data: [i, e], backgroundColor: ['#10B981', '#F43F5E'], borderRadius: 8, barThickness: 40 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, border: { display: false } } } }
             });
-
             const list = document.getElementById('categoryReportList'); list.innerHTML = '';
             const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]);
             if (sorted.length === 0) { document.getElementById('noReportData').classList.remove('hidden'); return; }
             document.getElementById('noReportData').classList.add('hidden');
-
             sorted.forEach(([cat, amt]) => {
                 const p = ((amt / e) * 100).toFixed(1); const ci = CATEGORIES.expense[cat];
-                list.innerHTML += `
-                    <div class="mb-3">
-                        <div class="flex justify-between text-sm mb-1"><span class="font-bold flex items-center gap-2"><i class="fa-solid ${ci.icon} ${ci.text}"></i> ${cat}</span><span class="font-bold">${formatMoney(amt)}</span></div>
-                        <div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-vip-accent h-1.5 rounded-full" style="width:${p}%"></div></div>
-                    </div>`;
+                list.innerHTML += `<div class="mb-3"><div class="flex justify-between text-sm mb-1"><span class="font-bold flex items-center gap-2"><i class="fa-solid ${ci.icon} ${ci.text}"></i> ${cat}</span><span class="font-bold">${formatMoney(amt)}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5"><div class="bg-vip-accent h-1.5 rounded-full" style="width:${p}%"></div></div></div>`;
             });
         }
 
@@ -1005,17 +1633,10 @@
             const c = document.getElementById('goalsList'); c.innerHTML = '';
             if (goals.length === 0) { document.getElementById('noGoalsMessage').classList.remove('hidden'); return; }
             document.getElementById('noGoalsMessage').classList.add('hidden');
-
             const cols = { indigo: 'text-indigo-500 bg-indigo-500', emerald: 'text-emerald-500 bg-emerald-500', blue: 'text-blue-500 bg-blue-500', rose: 'text-rose-500 bg-rose-500' };
             goals.forEach(g => {
                 const p = Math.min((g.saved / g.target) * 100, 100).toFixed(1); const col = cols[g.color];
-                c.innerHTML += `
-                    <div class="bg-white rounded-[2rem] p-6 border border-slate-50 shadow-premium relative group">
-                        <button onclick="deleteGoal('${g.id}')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 text-red-500 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                        <h4 class="font-bold text-lg mb-4 pr-6">${g.name}</h4>
-                        <div class="flex justify-between text-xs font-bold mb-1"><span class="${col.split(' ')[0]}">${p}%</span><span>${formatMoney(g.saved)} / ${formatMoney(g.target)}</span></div>
-                        <div class="w-full bg-slate-100 rounded-full h-2"><div class="${col.split(' ')[1]} h-2 rounded-full" style="width:${p}%"></div></div>
-                    </div>`;
+                c.innerHTML += `<div class="bg-white rounded-[2rem] p-6 border border-slate-50 shadow-premium relative group"><button onclick="deleteGoal('${g.id}')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 text-red-500 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-trash-can text-xs"></i></button><h4 class="font-bold text-lg mb-4 pr-6">${g.name}</h4><div class="flex justify-between text-xs font-bold mb-1"><span class="${col.split(' ')[0]}">${p}%</span><span>${formatMoney(g.saved)} / ${formatMoney(g.target)}</span></div><div class="w-full bg-slate-100 rounded-full h-2"><div class="${col.split(' ')[1]} h-2 rounded-full" style="width:${p}%"></div></div></div>`;
             });
         }
     </script>
